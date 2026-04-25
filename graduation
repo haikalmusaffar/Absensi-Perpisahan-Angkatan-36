@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Absensi Siswa</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+        }
+
+        .radio-option input[type="radio"]:checked + span {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .radio-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pendamping-group {
+            opacity: 1;
+            max-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .pendamping-group.hidden {
+            opacity: 0;
+            max-height: 0;
+            margin-bottom: 0;
+            overflow: hidden;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #result {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .data-preview {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .print-btn {
+            background: #28a745;
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Form Absensi Siswa</h1>
+        
+        <form id="attendanceForm">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap:</label>
+                <input type="text" id="nama" name="nama" required>
+            </div>
+
+            <div class="form-group">
+                <label for="kelas">Kelas:</label>
+                <select id="kelas" name="kelas" required>
+                    <option value="">Pilih Kelas</option>
+                    <option value="XII.1">XII.1</option>
+                    <option value="XII.2">XII.2</option>
+                    <option value="XII.3">XII.3</option>
+                    <option value="XII.4">XII.4</option>
+                    <option value="XII.5">XII.5</option>
+                    <option value="XII.6">XII.6</option>
+                    <option value="XII.7">XII.7</option>
+                    <option value="XII.8">XII.8</option>
+                    <option value="XII.9">XII.9</option>
+                    <option value="XII.10">XII.10</option>
+                    <option value="XII.11">XII.11</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Kehadiran:</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="kehadiran" value="Hadir" id="hadir" required>
+                        <span>✅ Hadir</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="kehadiran" value="Tidak Hadir" id="tidakHadir" required>
+                        <span>❌ Tidak Hadir</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group pendamping-group" id="pendampingGroup">
+                <label>Jumlah Pendamping:</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="pendamping" value="1" id="satuPendamping">
+                        <span>👤 1 Pendamping</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="pendamping" value="2" id="duaPendamping">
+                        <span>👥 2 Pendamping</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">📱 Generate QR Code</button>
+        </form>
+
+        <div id="result">
+            <div class="data-preview" id="dataPreview"></div>
+            <div id="qrcode"></div>
+            <button class="print-btn" onclick="window.print()">🖨️ Cetak QR Code</button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle pendamping group berdasarkan kehadiran
+        document.querySelectorAll('input[name="kehadiran"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const pendampingGroup = document.getElementById('pendampingGroup');
+                const pendampingRadios = document.querySelectorAll('input[name="pendamping"]');
+                
+                if (this.value === 'Tidak Hadir') {
+                    pendampingGroup.classList.add('hidden');
+                    pendampingRadios.forEach(radio => radio.checked = false);
+                    pendampingRadios.forEach(radio => radio.required = false);
+                } else {
+                    pendampingGroup.classList.remove('hidden');
+                    pendampingRadios.forEach(radio => radio.required = true);
+                }
+            });
+        });
+
+        // Handle form submit
+        document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {
+                nama: document.getElementById('nama').value,
+                kelas: document.getElementById('kelas').value,
+                kehadiran: document.querySelector('input[name="kehadiran"]:checked')?.value || '',
+                pendamping: document.querySelector('input[name="pendamping"]:checked')?.value || '0'
+            };
+
+            // Validasi
+            if (!data.nama || !data.kelas || !data.kehadiran) {
+                alert('Mohon lengkapi semua field yang diperlukan!');
+                return;
+            }
+
+            // Tampilkan preview data
+            const dataPreview = document.getElementById('dataPreview');
+            dataPreview.innerHTML = `
+                <div class="data-item">
+                    <span>Nama:</span>
+                    <strong>${data.nama}</strong>
+                </div>
+                <div class="data-item">
+                    <span>Kelas:</span>
+                    <strong>${data.kelas}</strong>
+                </div>
+                <div class="data-item">
+                    <span>Status:</span>
+                    <strong>${data.kehadiran === 'Hadir' ? '✅ Hadir' : '❌ Tidak Hadir'}</strong>
+                </div>
+                ${data.kehadiran === 'Hadir' ? `
+                <div class="data-item">
+                    <span>Pendamping:</span>
+                    <strong>${data.pendamping} ${data.pendamping == '1' ? 'pendamping' : 'pendamping'}</strong>
+                </div>` : ''}
+            `;
+
+            // Generate QR Code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '<canvas id="qrCodeCanvas"></canvas>';
+
+            const qrData = `Absensi Siswa\nNama: ${data.nama}\nKelas: ${data.kelas}\nStatus: ${data.kehadiran}${data.kehadiran === 'Hadir' ? `\nPendamping: ${data.pendamping}` : ''}\n${new Date().toLocaleString('id-ID')}`;
+            
+            QRCode.toCanvas(document.getElementById('qrCodeCanvas'), qrData, {
+                width: 250,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) console.error(error);
+            });
+
+            // Tampilkan result
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Style radio buttons
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                this.parentNode.querySelectorAll('.radio-option').forEach(opt => 
+                    opt.classList.remove('selected')
+                );
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
